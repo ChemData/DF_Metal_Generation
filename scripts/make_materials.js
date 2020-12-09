@@ -2,13 +2,20 @@ const METAL_NAMES = ['fertrin', 'obal', 'plectris', 'ris', 'murin', 'drack', 'fe
           'paltrice', 'nortrum', 'palsium', 'galsic', 'bolium', 'ersic', 'los', 'amruth', 'othium',
           'actrin', 'shis', 'galtrium', 'ablore', 'efelsium', 'mathril', 'melinc', 'entraper',
           'tallis', 'unthorm', 'neplomb', 'larue', 'marenzium', 'ashtoom', 'plazit', 'sabber',
-          'woser', 'yurime', 'pentorneem', 'listelrontin', 'jessine', 'ysaak'];
+          'woser', 'yurime', 'pentorneem', 'listelrontin', 'ysaak', 'elaban', "groth'atul", 
+          'relt', 'exalit', 'brack', 'nothalin', 'prothagon', 'estor', 'estar', 'estan', 'estamos',
+          'tynok', 'prexor', 'velsium', 'vor', 'toctium', 'trentin', "j'brar", 'klystun', 'bistung',
+          'listel', 'gismun', 'effter', 'flilt', 'absoleen', 'beloc', 'fentilin', 'loxtin', 'roteen', 'vantin',
+          'bostom', 'atalama', 'cartoleen', 'tep', 'bas', 'nibelum', 'vactoos', 'anitine'];
 
 
 const ORE_NAMES = ['rentite', 'fentite', 'ossonite', 'palminite', 'palionite', 'festerite', 'malficite',
             'witterite', 'dristite', 'falatite', 'malfiotite', 'cositite', 'chthonicite',
             'orthosite', 'metasite', 'parasite', 'alactite', 'mothrosite', 'bilitite', 'eminite',
-            'pectite', 'neofite', 'drektite', 'palatite', 'dufite'];
+            'pectite', 'neofite', 'drektite', 'palatite', 'dufite', 'hellerite', 'hopelite', 'imogolite',
+            'cosohedrite', 'sohite', 'benitite', 'acrotite', 'actorite', 'techtite', 'bectite', 'bestite',
+            'anitite', 'kerolite', 'kegelite', 'kinoite', 'krotite', 'jaffeite', 'nsutite', 'masuite', 'nahcolite',
+            'sellatite', 'sincosite', 'stellerite', 'weloganite', 'wardite'];
             
 
 var GENNED_METALS = null;
