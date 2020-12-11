@@ -123,6 +123,7 @@ function range(lower, upper) {
 }
   
 function capitalize(input_string) {
+  input_string = input_string.toLowerCase();
   return input_string.charAt(0).toUpperCase() + input_string.slice(1);
 }
 

@@ -352,9 +352,55 @@ function downloadFiles() {
     return ;
   }
   let file_names = Object.keys(files);
+  let results_table = makeResultsTable(GENNED_METALS, GENNED_ORES);
+  files['mod_overview.txt'] = results_table;
+  file_names = file_names.concat('mod_overview.txt');
   file_names.forEach(file_name => downloadString(files[file_name], 'text', file_name));
 }
 
+function makeResultsTable(metals, ores) {
+  //Return a string describing the metals and ores that were made
+  let output = '###METALS###';
+  let ingredient_string;
+  for (let metal of metals) {
+    output += `\n\n${capitalize(metal.name)}`;
+    if (metal.usable) {
+      output += `\n\tStrength: ${metal.strength()}`;
+      output += `\n\tValue: ${metal.material_properties['MATERIAL_VALUE']}`;
+    }
+    output += `\n\tColor: ${capitalize(metal.material_properties['STATE_COLOR']['ALL_SOLID'].toLowerCase()).replace('_', ' ')}`;
+    if (!metal.advanced) {
+      if (metal.alloy) {
+        ingredient_string = [];
+        for (let i=0; i<metal.constituent_metals.length; i++) {
+          ingredient_string = ingredient_string.concat(`${metal.constituent_amounts[i]} ${capitalize(metal.constituent_metals[i].name)}`);
+        }
+        ingredient_string = ingredient_string.join(' + ');
+        output += `\n\tIngredients: ${ingredient_string}`;
+      }
+    } else {
+      output += `\n\tIngredients: ${capitalize(metal.precursor.name)} + ${capitalize(metal.extra_ingredient)}`
+    }
+    }
+  
+  output += '\n\n\n###ORES###';
+  for (let ore of ores) {
+    output += `\n\n${capitalize(ore.name)}`;
+    ingredient_string = []
+    for (let i=0; i<ore.metals.length; i++) {
+      ingredient_string = ingredient_string.concat(`${ore.metal_probs[i]} ${capitalize(ore.metals[i].name)}`);
+    }
+    output += `\n\tSmelts To: ${ingredient_string.join(', ')}`;
+    let environments = {...ore.properties['ENVIRONMENT'], ...ore.properties['ENVIRONMENT_SPEC']};
+    environments = Object.keys(environments);
+    let environment_string = [];
+    environments.forEach(ele => environment_string=environment_string.concat(capitalize(ele)));
+    environment_string = environment_string.join(', ');
+    
+    output += `\n\tFound In: ${environment_string}`;
+  }
+  return output;
+}
 
 function makeMetalsPress() {
   let n_basic = parseInt(document.getElementById('basic_metals').value);

@@ -124,14 +124,14 @@ class Metal {
       this.material_properties['ITEMS_SCALED'] = true;
       this.material_properties['MAX_EDGE'] = 10000;
     }
-    if (this.strength >= 1) {
+    if (this.strength() >= 1) {
       this.material_properties['ITEMS_WEAPON'] = true;
       this.material_properties['ITEMS_WEAPON_RANGED'] = true;
       this.material_properties['ITEMS_AMMO'] = true;
       this.material_properties['ITEMS_DIGGER'] = true;
       this.material_properties['ITEMS_ARMOR'] = true;
     }
-    if (this.strength > 1.7) {
+    if (this.strength() > 1.7) {
       this.material_properties['ITEMS_ANVIL'] = true;
     }
   }
