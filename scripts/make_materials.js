@@ -56,13 +56,13 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
     // Determine the rarity
     if (metal.aesthetic_value < 6) {
       ores_for_metal = randomChoice([1, 2, 3], [.7, .2, .1])[0];
-      rarities = randomChoice([2, 3, 4], [.2 ,.4, .4], ores_for_metal, true);
+      rarities = randomChoice([1, 2, 3, 4], [.2, .2 ,.4, .2], ores_for_metal, true);
     } else if (metal.aesthetic_value < 30) {
       ores_for_metal = randomChoice([1, 2], [.7, .3])[0];
-      rarities = randomChoice([3, 4], [.3, .7], ores_for_metal, true);
+      rarities = randomChoice([2, 3, 4], [.2, .3, .5], ores_for_metal, true);
     } else {
       is_native = true;
-      rarities = randomChoice([4, 5, 6, 7], [.2, .5, .2, .1], 1, true);
+      rarities = randomChoice([3, 4, 5, 6, 7], [.1, .2, .4, .2, .1], 1, true);
     }
     
     let rarity;
