@@ -11,5 +11,6 @@ The quickest method is to use the website.
 3) Press "Make Metals"
 4) Inspect the properties of the metals. If you don't like them go to (3).
 5) Press "Download Raw Files". This will download a handful of txt files.
-6) Place these txt files into your DF raws folder. Something like: 'Dwarf Fortress 0.47.04/raw/objects. Override the existing files.
-7) Generate a new world.
+6) One of these files, "mod_info.txt", provides a summary of the ores and metals that were just generated.
+7) Place the other .txt files into your DF raws folder. Something like: 'Dwarf Fortress 0.47.04/raw/objects. Override the existing files.
+8) Generate a new world.
