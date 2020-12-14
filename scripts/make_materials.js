@@ -98,16 +98,20 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
   let alloy_metals;
   let amounts;
   for (let i=0; i<number_of_alloys; i++) {
+    if (metals.length < 2) {
+      throw new NotEnoughBasicMetals();
+    }
     positions = shuffle(range(0, metals.length));
     alloy_metals = [metals[positions[0]], metals[positions[1]]];  // add  primary and secondary metal
-    if (Math.random() < 0.4) {
+    
+    if ((Math.random() < 0.6) | (metals.length == 2)) {
+      amounts = randomChoice([[1, 1], [2, 1], [3, 1], [3, 2]], normalize([3, 3, 2, 1]));
+    } else {
       alloy_metals = alloy_metals.concat(metals[positions[2]]);  // maybe add another secondary metal
       amounts = randomChoice(
         [[1, 1, 1,], [2, 1, 1], [3, 1, 1], [2, 2, 1], [3, 2, 1], [3, 2, 2]],
         normalize([2, 3, 3, 1, 1, 1]));
-    } else {
-      amounts = randomChoice([[1, 1], [2, 1], [3, 1], [3, 2]], normalize([3, 3, 2, 1]));
-    }
+    } 
     if (metal_names.length == 0) {
       throw new NotEnoughNames();
     }
@@ -411,9 +415,14 @@ function makeMetalsPress() {
   let genned;
   try {
     genned = generateMetals(n_basic, n_alloys, n_advanced);
-  } catch(NotEnoughNames) {
-    alert("There are not enough names to assign to the generated metals.");
-    return;
+  } catch(e) {
+    if (e instanceof NotEnoughNames){
+      alert("There are not enough names to assign to the generated metals.");
+      return;
+    } else if (e instanceof NotEnoughBasicMetals){
+      alert("There are not enough basic metals to generate alloys. Add a few more.");
+      return;
+    }
   }
   GENNED_METALS = genned[0];
   GENNED_ORES = genned[1];
@@ -556,3 +565,10 @@ class CannotPickCurrencies extends Error {
     this.name = "CannotPickCurrencies";
   }
 }
+
+class NotEnoughBasicMetals extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "NotEnoughBasicMetals";
+  }
+}  
