@@ -2,7 +2,7 @@ const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 class Metal {
   
-	constructor(name, advanced=false, usable=false, allow_from_ores=true, constituent_metals=[]) {
+	constructor(name, advanced=false, usable=false, allow_from_ores=true, constituent_metals=[], from_vanilla=false) {
 	this.name = name;
 	this.strength_value = 0;
 	this.aesthetic_value = 0;
@@ -28,6 +28,7 @@ class Metal {
 		this.constituent_amounts = this.constituent_amounts.concat(constituent_metals[i][1]);
 		}
 	}
+  this.from_vanilla = from_vanilla
 	this.precursor = null;
 	this.extra_ingredient = null;
 	
@@ -191,6 +192,9 @@ class Metal {
   
   rawText() {
     //Return this metal formated for inclusion in a raw file.
+    if (this.vanilla) {
+      return ''
+    }
     let order = [
       'USE_MATERIAL_TEMPLATE',
       'STATE_NAME_ADJ',
@@ -255,6 +259,9 @@ class Metal {
 
   reactionRawText() {
     //Return a string describing the production of an alloy.
+    if (this.vanilla) {
+      return '';
+    }
     let output = '';
     if (this.alloy) {
       // Make the reaction from ore
@@ -300,6 +307,9 @@ class Metal {
   
   entityRawText(advanced) {
   //Return a string describing the reaction(s) to make this metal for inclusion in the entity_default raw file.
+    if (this.vanilla) {
+      return '';
+    }
     if (~advanced & this.advanced) {
       return '';
     }
@@ -354,7 +364,11 @@ class Ore {
     
     if (this.native_ore) {
       let metal_name = this.metals[0].name;
-      this.name = `native_${metal_name}`
+      this.name = `native_${metal_name}`;
+      let simple_name = `native ${metal_name}`;
+      this.properties['STATE_NAME_ADJ']['ALL_SOLID'] = simple_name;
+      this.properties['STATE_NAME_ADJ']['LIQUID'] = `molten ${simple_name}`;
+      this.properties['STATE_NAME_ADJ']['GAS'] = `boiling ${simple_name}`;
       this.properties['ITEMS_HARD'] = true;
       this.properties['DISPLAY_COLOR'] = this.metals[0].material_properties['DISPLAY_COLOR'];
       this.properties['MAX_EDGE'] = 1000  //you can't make weapons out of unsmelted native ores
@@ -480,7 +494,7 @@ class Ore {
         if ((typeof(value) == 'boolean') & (value)) {
           output += `\n\t[${prop}]`;
         } else if (Array.isArray(value)) {
-          value.forEach(arr_piece => output += `\n\t[${prop}:${arr_piece}`);
+          value.forEach(arr_piece => output += `\n\t[${prop}:${arr_piece}]`);
         } else if (typeof(value) ==  'object') {
           unpack_dict(value).forEach(line => output += `\n\t[${prop}:${line}]`);
         } else if (typeof(value) != 'bool') {

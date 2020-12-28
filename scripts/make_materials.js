@@ -3,7 +3,7 @@ const METAL_NAMES = ['fertrin', 'obal', 'plectris', 'ris', 'murin', 'drack', 'fe
           'actrin', 'shis', 'galtrium', 'ablore', 'efelsium', 'mathril', 'melinc', 'entraper',
           'tallis', 'unthorm', 'neplomb', 'larue', 'marenzium', 'ashtoom', 'plazit', 'sabber',
           'woser', 'yurime', 'pentorneem', 'listelrontin', 'ysaak', 'elaban', "groth'atul", 
-          'relt', 'exalit', 'brack', 'nothalin', 'prothagon', 'estor', 'estar', 'estan', 'estamos',
+          'relt', 'exalit', 'brack', 'nothalin', 'prothagon', 'estor', 'estar',
           'tynok', 'prexor', 'velsium', 'vor', 'toctium', 'trentin', "j'brar", 'klystun', 'bistung',
           'listel', 'gismun', 'effter', 'flilt', 'absoleen', 'beloc', 'fentilin', 'loxtin', 'roteen', 'vantin',
           'bostom', 'atalama', 'cartoleen', 'tep', 'bas', 'nibelum', 'vactoos', 'anitine'];
@@ -29,6 +29,7 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
   **/
   let metal_names = shuffle(METAL_NAMES);
   let ore_names = shuffle(ORE_NAMES);
+  let vanilla_include = document.getElementById('vanilla_include').value;
   
   //Make metals
   let metals = [];
@@ -93,6 +94,10 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
   }
   
   //Make alloys
+  if (vanilla_include == 'all') {
+    metals = metals.concat(VANILLA_BASIC);
+  }
+
   let alloys = [];
   let positions;
   let alloy_metals;
@@ -120,6 +125,9 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
   }
   let basic_metals = [...metals];
   metals = metals.concat(alloys);
+  if (vanilla_include == 'all') {
+    metals = metals.concat(VANILLA_ALLOYS);
+  }
   
   //make advanced metals
   for (let i=0; i<number_of_advanced_metals; i++) {
@@ -132,6 +140,9 @@ function generateMetals(number_of_metals, number_of_alloys=0, number_of_advanced
     metal_names = [...metal_names.slice(length)];
     chain_metals = generateAdvancedChain(base_metal, length, chain_names);
     metals = metals.concat(chain_metals)
+  }
+  if (vanilla_include == 'all') {
+    metals = metals.concat(VANILLA_ADVANCED);
   }
   return [metals, ores];
 }
@@ -188,7 +199,12 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
     reactions_to_write = 'reaction_smelter\n\n[OBJECT:REACTION]\n\n';
   }
   metals_to_write += '\n\n##### New Metals #####\n';
-  metals.forEach(metal => metals_to_write += `\n\n${metal.rawText()}`);
+  for (let i=0; i<metals.length; i++) {
+    if (metals[i].from_vanilla) {
+      continue;
+    }
+    metals_to_write += `\n\n${metals[i].rawText()}`;
+  }
   
   minerals_to_write += '\n\n##### New Minerals #####\n';
   ores.forEach(ore => minerals_to_write += `\n\n${ore.rawText()}`);
@@ -196,6 +212,9 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
   reactions_to_write += '\n\n##### New Reactions #####\n';
   let reaction_text;
   for (let i=0; i<metals.length; i++) {
+    if (metals[i].from_vanilla){
+      continue;
+    }
     reaction_text = metals[i].reactionRawText();
     if (reaction_text != '') {
       reactions_to_write += `\n\n${reaction_text}`;
@@ -208,13 +227,13 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
   underground_raw = CREATURE_SUBTERRANEAN;
   gems_raw = INORGANIC_STONE_GEM;
   
-  if (['basic', 'none'].includes(vanilla_include)) {
-    // replace currencies
-    let currency_metals = pickCurrencyMetals(metals);
-    entity_raw = entity_raw.replaceAll('CURRENCY:COPPER', 'CURRENCY:'+currency_metals[0].toUpperCase());
-    entity_raw = entity_raw.replaceAll('CURRENCY:SILVER', 'CURRENCY:'+currency_metals[1].toUpperCase());
-    entity_raw = entity_raw.replaceAll('CURRENCY:GOLD', 'CURRENCY:'+currency_metals[2].toUpperCase());
-    
+  // replace currencies
+  let currency_metals = pickCurrencyMetals(metals);
+  entity_raw = entity_raw.replaceAll('CURRENCY:COPPER', 'CURRENCY:'+currency_metals[0].toUpperCase());
+  entity_raw = entity_raw.replaceAll('CURRENCY:SILVER', 'CURRENCY:'+currency_metals[1].toUpperCase());
+  entity_raw = entity_raw.replaceAll('CURRENCY:GOLD', 'CURRENCY:'+currency_metals[2].toUpperCase());
+  
+  if (['basic', 'none'].includes(vanilla_include)) {    
     // replace reactions
     let remove_reactions = [
         'BRASS_MAKING2', 'BRONZE_MAKING', 'BRONZE_MAKING2', 'ELECTRUM_MAKING', 'ELECTRUM_MAKING2',
@@ -229,6 +248,9 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
     let basic_replace = '';
     let advanced_replace = '';
     for (let i=0; i<metals.length; i++) {
+      if (metals[i].from_vanilla) {
+        continue;
+      }
       basic_replace += metals[i].entityRawText(false);
       advanced_replace += metals[i].entityRawText(true);
     }
@@ -282,8 +304,10 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
     let basic_replace = '\n\t[PERMITTED_REACTION:BRASS_MAKING]'
     let advanced_replace = '\n\t[PERMITTED_REACTION:STEEL_MAKING]'
     for (let i=0; i<metals.length; i++) {
-      basic_replace += metals[i].entityRawText(false);
-      advanced_replace += metals[i].entityRawText(true);
+      if (!metals[i].from_vanilla){
+        basic_replace += metals[i].entityRawText(false);
+        advanced_replace += metals[i].entityRawText(true);
+      }
     }
     
     // BRASS_MAKING stands in for basic reactions
@@ -293,7 +317,7 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
   
   return {'inorganic_metal.txt': metals_to_write, 'inorganic_stone_mineral.txt': minerals_to_write, 
   'reaction_smelter.txt':reactions_to_write, 'entity_default.txt':entity_raw,
-  'creature_standard.txt': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
+  'creature_standard': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
  
 }
 
@@ -331,7 +355,6 @@ function pickCurrencyMetals(metals) {
   return [copper_like.name, silver_like.name, gold_like.name];
 }
 
-
 function downloadString(text, fileType, fileName) {
   var blob = new Blob([text], { type: fileType });
 
@@ -351,9 +374,13 @@ function downloadFiles() {
   let files;
   try {
     files = writeRawFiles(GENNED_METALS, GENNED_ORES, vanilla_include);
-  } catch(CannotPickCurrencies) {
-    alert("Suitable currency metals could not be found. Try again and maybe increase the number of basic metals.");
-    return ;
+  } catch (e) {
+    if (e instanceof CannotPickCurrencies) {
+      alert("Suitable currency metals could not be found. Try again and maybe increase the number of basic metals.");
+      return ;
+    } else {
+      throw e
+    }
   }
   let file_names = Object.keys(files);
   let results_table = makeResultsTable(GENNED_METALS, GENNED_ORES);
@@ -367,6 +394,9 @@ function makeResultsTable(metals, ores) {
   let output = '###METALS###';
   let ingredient_string;
   for (let metal of metals) {
+    if (metal.from_vanilla){
+      continue;
+    }
     output += `\n\n${capitalize(metal.name)}`;
     if (metal.usable) {
       output += `\n\tStrength: ${metal.strength()}`;
@@ -433,7 +463,8 @@ function makeMetalsPress() {
   for (let metal of GENNED_METALS) {
     if ((metal.advanced) | (metal.alloy)) {
       continue;}
-      
+    
+    // Get ores for the generated metals
     let producing_ores = [];
     for (let ore of GENNED_ORES) {
       let metal_index = ore.metals.indexOf(metal);
@@ -441,6 +472,12 @@ function makeMetalsPress() {
         producing_ores = producing_ores.concat(`${capitalize(ore.name).replace('_', ' ')} (${ore.metal_probs[metal_index]})`);
       }
     }
+    
+    // Get ores for the vanilla metals
+    if (metal.from_vanilla) {
+      producing_ores = metal.ores;
+    }
+    
     ore_string = producing_ores.join(', ');
         
     let new_row = [
@@ -572,3 +609,5 @@ class NotEnoughBasicMetals extends Error {
     this.name = "NotEnoughBasicMetals";
   }
 }  
+
+
