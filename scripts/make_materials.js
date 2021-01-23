@@ -317,7 +317,7 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
   
   return {'inorganic_metal.txt': metals_to_write, 'inorganic_stone_mineral.txt': minerals_to_write, 
   'reaction_smelter.txt':reactions_to_write, 'entity_default.txt':entity_raw,
-  'creature_standard': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
+  'creature_standard.txt': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
  
 }
 
