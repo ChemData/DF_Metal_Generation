@@ -386,6 +386,11 @@ function downloadFiles() {
   let results_table = makeResultsTable(GENNED_METALS, GENNED_ORES);
   files['mod_overview.txt'] = results_table;
   file_names = file_names.concat('mod_overview.txt');
+
+  // Doing this filter makes sure that only files that changed from the
+  // original vanilla files get through.....this makes it easier for modders to
+  // figure out what is going on
+  file_names = file_names.filter(f_name => files[f_name] != ORIGINAL_FILES[f_name]);
   file_names.forEach(file_name => downloadString(files[file_name], 'text', file_name));
 }
 

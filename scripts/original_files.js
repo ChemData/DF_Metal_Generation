@@ -14083,3 +14083,12 @@ const REACTION_SMELTER = `reaction_smelter
 [FUEL]
 [SKILL:SMELT]`
 
+const ORIGINAL_FILES = {
+    'inorganic_metal.txt': INORGANIC_STONE_MINERAL,
+    'inorganic_stone_mineral.txt': INORGANIC_STONE_MINERAL,
+    'reaction_smelter.txt':REACTION_SMELTER,
+    'entity_default.txt':ENTITY_DEFAULT,
+    'creature_standard.txt': CREATURE_STANDARD,
+    'creature_subterranean.txt': CREATURE_SUBTERRANEAN,
+    'inorganic_stone_gem.txt':INORGANIC_STONE_GEM
+};
