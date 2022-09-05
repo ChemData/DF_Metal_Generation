@@ -317,7 +317,7 @@ function writeRawFiles(metals, ores, vanilla_include='all') {
   
   return {'inorganic_metal.txt': metals_to_write, 'inorganic_stone_mineral.txt': minerals_to_write, 
   'reaction_smelter.txt':reactions_to_write, 'entity_default.txt':entity_raw,
-  'creature_standard': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
+  'creature_standard.txt': creature_raw, 'creature_subterranean.txt': underground_raw, 'inorganic_stone_gem.txt':gems_raw};
  
 }
 
@@ -386,6 +386,11 @@ function downloadFiles() {
   let results_table = makeResultsTable(GENNED_METALS, GENNED_ORES);
   files['mod_overview.txt'] = results_table;
   file_names = file_names.concat('mod_overview.txt');
+
+  // Doing this filter makes sure that only files that changed from the
+  // original vanilla files get through.....this makes it easier for modders to
+  // figure out what is going on
+  file_names = file_names.filter(f_name => files[f_name] != ORIGINAL_FILES[f_name]);
   file_names.forEach(file_name => downloadString(files[file_name], 'text', file_name));
 }
 
