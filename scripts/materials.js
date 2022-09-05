@@ -166,7 +166,9 @@ class Metal {
   determineAppearance() {
     //Determine the color of the metal
     let color;
-    if (this.alloy === false) {
+    if (this.advanced === true) {
+      color = pickAlloyColor(this.precursor.color_name)
+    } else if (this.alloy === false) {
       if (this.aesthetic_value < 6) {
         color = pickMetalColor('basic');
       } else if (this.aesthetic_value < 30) {
